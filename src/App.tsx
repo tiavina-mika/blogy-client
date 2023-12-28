@@ -1,34 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useTheme } from '@emotion/react';
+import { Button, ThemeProvider, createTheme, styled } from '@mui/material'
+import { green, purple } from '@mui/material/colors';
 
-function App() {
-  const [count, setCount] = useState(0)
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: purple[500],
+      light: purple[300],
+    },
+    secondary: {
+      main: green[500],
+    },
+  },
+});
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.light
+}));
+
+const Home = () => {
+  const appTheme = useTheme();
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Button variant="contained" sx={{ bgcolor: appTheme.palette.secondary.main }}>Button sx</Button>
+      <StyledButton variant="contained">Styled Button</StyledButton>
     </>
+  )
+}
+
+function App() {
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Home />
+    </ThemeProvider>
   )
 }
 
