@@ -11,3 +11,8 @@ export interface IArticlesResponse {
   success: boolean;
   articles: IArticle[];
 }
+
+export interface IArticleResponse {
+  success: boolean;
+  article: IArticle;
+}
