@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material"
+import { Button, Stack, TextField } from "@mui/material"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import { IArticle, IArticleInput } from "../../types/article.types"
 
@@ -43,25 +43,27 @@ const ArticleForm = ({ onSubmit, article, loading }: Props) => {
   
   return (
     <form onSubmit={handleSubmit}>
-      <TextField
-        label="Title"
-        variant="outlined"
-        name="title"
-        value={values.title}
-        onChange={handleChange}
-      />
-      <TextField
-          label="Content"
-          multiline
-          maxRows={4}
+      <Stack spacing={2}>
+        <TextField
+          label="Title"
           variant="outlined"
-          name="content"
-          value={values.content}
+          name="title"
+          value={values.title}
           onChange={handleChange}
-      />
-      <Button type="submit">
-        {loading ? "...loading" : "Save"}
-      </Button>
+        />
+        <TextField
+            label="Content"
+            multiline
+            maxRows={4}
+            variant="outlined"
+            name="content"
+            value={values.content}
+            onChange={handleChange}
+        />
+        <Button type="submit" variant="contained">
+          {loading ? "...loading" : "Save"}
+        </Button>
+      </Stack>
     </form>
   )
 }
