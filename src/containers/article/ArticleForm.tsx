@@ -10,8 +10,9 @@ const initialValues = {
 type Props = {
   onSubmit: (values: IArticleInput) => void;
   article: IArticle | null;
+  loading?: boolean;
 }
-const ArticleForm = ({ onSubmit, article }: Props) => {
+const ArticleForm = ({ onSubmit, article, loading }: Props) => {
   const [values, setValues] = useState<IArticleInput>(initialValues);
 
   // set initial form values, mainly for edition
@@ -59,7 +60,7 @@ const ArticleForm = ({ onSubmit, article }: Props) => {
           onChange={handleChange}
       />
       <Button type="submit">
-        Save
+        {loading ? "...loading" : "Save"}
       </Button>
     </form>
   )

@@ -5,18 +5,22 @@ import Articles from "./article/Articles"
 import { createArticle, deleteArticle, editArticle, getArticles } from "../actions/articles.action";
 import { IArticle, IArticleInput } from "../types/article.types";
 import Notification from "../components/Notification";
+import { LinearProgress } from "@mui/material";
 
 const Home = () => {
   const [articles, setArticles] = useState<IArticle[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<IArticle | null>(null);
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   // load initial article list
   useEffect(() => {
       const init = async () => {
         try {
+          setLoading(true);
           const articles = await getArticles();
           setArticles(articles as IArticle[]);
+          setLoading(false);
         } catch (error) {
           setError(error as string);
         }
@@ -27,15 +31,18 @@ const Home = () => {
 
   const handleDeleteArticle = async (id: string) => {
     try {
+      setLoading(true);
       const deletedArticle = await deleteArticle(id);
       const newArticles = articles.filter((article: IArticle) => article._id !== (deletedArticle as IArticle)._id);
-      setArticles(newArticles)
+      setArticles(newArticles);
+      setLoading(false);
     } catch (error) {
       setError(error as string);
     }
   }
 
   const handleSubmitArticle = async (values: IArticleInput) => {
+    setLoading(true);
     try {
       // -------- edition -------- //
       if (selectedArticle) {
@@ -53,7 +60,9 @@ const Home = () => {
             // non updated article
             return article;
           })
-        })
+        });
+
+        setLoading(false);
 
         return;
       }
@@ -61,8 +70,10 @@ const Home = () => {
       // -------- creation -------- //
       const article = await createArticle(values);
       setArticles((prev: IArticle[]): IArticle[] => [article as IArticle, ...prev]);
+      setLoading(false);
     } catch (error) {
       setError(error as string);
+      setLoading(false);
     }
   }
 
@@ -71,11 +82,13 @@ const Home = () => {
   }
 
   return (
-    <div css={{ minHeight: "100vh" }} className="flexColumn">
+    <div css={{ minHeight: "100vh", position: "relative" }} className="flexColumn">
+      {loading && <LinearProgress css={{ height: 4, position: "absolute", top: 0, left: 0, right: 0 }} className="stretchSelf" />}
       <h1>Home</h1>
       <ArticleForm
         onSubmit={handleSubmitArticle}
         article={selectedArticle}
+        loading={loading}
       />
       <Articles
         articles={articles}
