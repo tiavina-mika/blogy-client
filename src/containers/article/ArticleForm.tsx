@@ -1,9 +1,9 @@
-import { Button, Stack } from "@mui/material";
 import { useEffect } from "react"
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 import { IArticle, IArticleInput } from "../../types/article.types"
 import TextField from "../../components/form/fields/TextField";
+import Form from "../../components/form/Form";
 
 const initialValues = {
   title: '',
@@ -36,28 +36,19 @@ const ArticleForm = ({ onSubmit, article, loading }: Props) => {
   }
 
   return (
-    <FormProvider {...form}>
-      <form onSubmit={handleSubmit(_onSubmit)}>
-        <Stack spacing={2}>
-          <TextField
-            label="Title"
-            name="title"
-          />
+    <Form form={form} onSubmit={handleSubmit(_onSubmit)} loading={loading}>
+      <TextField
+        label="Title"
+        name="title"
+      />
 
-          <TextField
-            label="Content"
-            name="content"
-            multiline
-            maxRows={4}
-          />
-
-          <Button type="submit" variant="contained">
-            {loading ? "...loading" : "Save"}
-          </Button>
-        </Stack>
-      </form>
-    </FormProvider>
-
+      <TextField
+        label="Content"
+        name="content"
+        multiline
+        maxRows={4}
+      />
+    </Form>
   )
 }
 
