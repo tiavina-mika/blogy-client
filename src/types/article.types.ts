@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { articleSchema } from "../validations/article.validations";
+
 export interface IArticle {
   _id: string;
   title: string;
@@ -5,7 +8,7 @@ export interface IArticle {
   __v: number;
 }
 
-export interface IArticleInput extends Pick<IArticle, 'title' | 'content'> {}
+export type IArticleInput = z.infer<typeof articleSchema>;
 
 export interface IArticlesResponse {
   success: boolean;

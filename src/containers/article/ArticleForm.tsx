@@ -1,9 +1,11 @@
 import { useEffect } from "react"
 import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { IArticle, IArticleInput } from "../../types/article.types"
 import TextField from "../../components/form/fields/TextField";
 import Form from "../../components/form/Form";
+import { articleSchema } from "../../validations/article.validations";
 
 const initialValues = {
   title: '',
@@ -15,9 +17,11 @@ type Props = {
   article: IArticle | null;
   loading?: boolean;
 }
+
 const ArticleForm = ({ onSubmit, article, loading }: Props) => {
   const form = useForm({
-    defaultValues: initialValues
+    defaultValues: initialValues,
+    resolver: zodResolver(articleSchema),
   });
 
   const { handleSubmit, reset } = form;
