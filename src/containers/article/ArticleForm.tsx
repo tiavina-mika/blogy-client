@@ -1,7 +1,8 @@
 import { Button, Stack, TextField } from "@mui/material"
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { IArticle, IArticleInput } from "../../types/article.types"
+import { useEffect } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { IArticle, IArticleInput } from "../../types/article.types"
 
 const initialValues = {
   title: '',
@@ -14,9 +15,17 @@ type Props = {
   loading?: boolean;
 }
 const ArticleForm = ({ onSubmit, article, loading }: Props) => {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: initialValues
   });
+
+  useEffect(() => {
+    if (!article) return;
+    reset({
+      title: article.title,
+      content: article.content,
+    })
+  }, [article, reset])
 
   const _onSubmit: SubmitHandler<IArticleInput> = (values) => {
     onSubmit(values);
