@@ -1,6 +1,11 @@
-import { Button, Stack, TextField } from "@mui/material"
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { useEffect } from "react"
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { IArticle, IArticleInput } from "../../types/article.types"
+import TextField from "../../components/form/fields/TextField";
+import Form from "../../components/form/Form";
+import { articleSchema } from "../../validations/article.validations";
 
 const initialValues = {
   title: '',
@@ -12,59 +17,42 @@ type Props = {
   article: IArticle | null;
   loading?: boolean;
 }
-const ArticleForm = ({ onSubmit, article, loading }: Props) => {
-  const [values, setValues] = useState<IArticleInput>(initialValues);
 
-  // set initial form values, mainly for edition
+const ArticleForm = ({ onSubmit, article, loading }: Props) => {
+  const form = useForm({
+    defaultValues: initialValues,
+    resolver: zodResolver(articleSchema),
+  });
+
+  const { handleSubmit, reset } = form;
+
   useEffect(() => {
     if (!article) return;
-
-    // the form values is the article values
-    setValues({
+    reset({
       title: article.title,
       content: article.content,
     })
-  }, [article])
+  }, [article, reset])
 
-  // change each input field
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValues((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
-  // when clicking the submit button
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const _onSubmit: SubmitHandler<IArticleInput> = (values) => {
     onSubmit(values);
-    setValues(initialValues)
+    reset(initialValues);
   }
-  
+
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack spacing={2}>
-        <TextField
-          label="Title"
-          variant="outlined"
-          name="title"
-          value={values.title}
-          onChange={handleChange}
-        />
-        <TextField
-            label="Content"
-            multiline
-            maxRows={4}
-            variant="outlined"
-            name="content"
-            value={values.content}
-            onChange={handleChange}
-        />
-        <Button type="submit" variant="contained">
-          {loading ? "...loading" : "Save"}
-        </Button>
-      </Stack>
-    </form>
+    <Form form={form} onSubmit={handleSubmit(_onSubmit)} loading={loading}>
+      <TextField
+        label="Title"
+        name="title"
+      />
+
+      <TextField
+        label="Content"
+        name="content"
+        multiline
+        maxRows={4}
+      />
+    </Form>
   )
 }
 
